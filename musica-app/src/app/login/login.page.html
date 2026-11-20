@@ -1,0 +1,46 @@
+<ion-content class="fondo-login ion-padding">
+  <div class="contenedor-login">
+    <div class="logo-circulo">
+      <ion-icon name="musical-notes"></ion-icon>
+    </div>
+    <h1 class="marca">APP MUSIC</h1>
+    <p class="subtitulo">Inicia sesión para personalizar tu experiencia</p>
+
+    <div class="caja-input">
+      <ion-input
+        [(ngModel)]="nombre"
+        placeholder="Escribe tu nombre..."
+        type="text"
+        (keyup.enter)="iniciarSesion()"
+      ></ion-input>
+    </div>
+
+    @if (mensajeError) {
+      <p class="error">{{ mensajeError }}</p>
+    }
+
+    <ion-button expand="block" class="btn-entrar" (click)="iniciarSesion()">
+      <ion-icon name="log-in-outline" slot="start"></ion-icon>
+      Iniciar Sesión
+    </ion-button>
+
+    <div class="separador">o continúa con</div>
+
+    <div class="redes">
+      <ion-button expand="block" fill="outline" class="btn-red" (click)="entrarRapido('Google')">
+        <ion-icon name="logo-google" slot="start"></ion-icon>
+        Google
+      </ion-button>
+
+      <ion-button expand="block" fill="outline" class="btn-red" (click)="entrarRapido('Apple')">
+        <ion-icon name="logo-apple" slot="start"></ion-icon>
+        Apple
+      </ion-button>
+
+      <ion-button expand="block" fill="outline" class="btn-red" (click)="entrarRapido('TikTok')">
+        <ion-icon name="logo-tiktok" slot="start"></ion-icon>
+        TikTok
+      </ion-button>
+    </div>
+  </div>
+</ion-content>

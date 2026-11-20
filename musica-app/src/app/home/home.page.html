@@ -1,0 +1,132 @@
+<ion-content class="fondo-app ion-padding">
+  <!-- Barra superior con saludo y botón de cerrar sesión -->
+  <div class="top-bar">
+    <div>
+      <p class="saludo">Hola, {{ nombreUsuario }} 👋</p>
+      <h1 class="titulo-principal">¿Qué quieres escuchar?</h1>
+    </div>
+    <div class="top-iconos">
+      <ion-button fill="clear" class="btn-icono">
+        <ion-icon name="notifications-outline"></ion-icon>
+      </ion-button>
+      <ion-button shape="round" size="small" class="btn-salir" (click)="cerrarSesion()">
+        <ion-icon name="log-out-outline" slot="start"></ion-icon>
+        Salir
+      </ion-button>
+    </div>
+  </div>
+
+  <!-- Buscador -->
+  <ion-searchbar
+    [(ngModel)]="textoBusqueda"
+    placeholder="Buscar canción o artista..."
+    class="buscador"
+  ></ion-searchbar>
+
+  <!-- Filtros de género con chips de colores -->
+  <div class="chips-generos">
+    @for (genero of generos; track genero) {
+      <ion-chip
+        [class.chip-activo]="generoSeleccionado === genero"
+        (click)="seleccionarGenero(genero)"
+      >
+        <ion-label>{{ genero }}</ion-label>
+      </ion-chip>
+    }
+  </div>
+
+  <!-- Sección Recomendado -->
+  <div class="seccion-header">
+    <h2><ion-icon name="flame" class="icono-fuego"></ion-icon> Recomendado</h2>
+    <span class="ver-todo">Ver todo</span>
+  </div>
+
+  <div class="carrusel-horizontal">
+    @for (item of recomendados; track item.id) {
+      <div class="tarjeta-recomendado" (click)="reproducir(item)">
+        <div class="portada-box" [style.background]="item.gradiente">
+          <ion-icon [name]="item.icono" class="icono-portada"></ion-icon>
+          <div class="badge-play">
+            <ion-icon
+              [name]="cancionActual?.id === item.id && estaReproduciendo ? 'pause' : 'play'"
+            ></ion-icon>
+          </div>
+        </div>
+        <div class="card-titulo">{{ item.titulo }}</div>
+        <div class="card-artista">{{ item.artista }}</div>
+      </div>
+    }
+  </div>
+
+  <!-- Sección Escuchado recientemente -->
+  <div class="seccion-header">
+    <h2><ion-icon name="headset" class="icono-morado"></ion-icon> Escuchado recientemente</h2>
+  </div>
+
+  @if (recientesFiltrados.length === 0) {
+    <div class="sin-resultados">
+      <ion-icon name="musical-notes"></ion-icon>
+      <p>No encontramos canciones con ese filtro.</p>
+    </div>
+  } @else {
+    <div class="lista-recientes">
+      @for (cancion of recientesFiltrados; track cancion.id) {
+        <div
+          class="fila-cancion"
+          [class.sonando]="cancionActual?.id === cancion.id"
+          (click)="reproducir(cancion)"
+        >
+          <div class="mini-portada" [style.background]="cancion.gradiente">
+            <ion-icon [name]="cancion.icono"></ion-icon>
+          </div>
+
+          <div class="info-cancion">
+            <h3>{{ cancion.titulo }}</h3>
+            <p>{{ cancion.artista }} · {{ cancion.duracion }}</p>
+          </div>
+
+          <div class="acciones-cancion">
+            <ion-button
+              fill="clear"
+              size="small"
+              (click)="toggleFavorito(cancion, $event)"
+            >
+              <ion-icon
+                [name]="cancion.favorito ? 'heart' : 'heart-outline'"
+                [class.corazon-activo]="cancion.favorito"
+                class="icono-corazon"
+              ></ion-icon>
+            </ion-button>
+
+            <div class="btn-play-circulo">
+              <ion-icon
+                [name]="cancionActual?.id === cancion.id && estaReproduciendo ? 'pause' : 'play'"
+              ></ion-icon>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Mini Reproductor flotante -->
+  @if (cancionActual) {
+    <div class="mini-player">
+      <div class="mini-cover" [style.background]="cancionActual.gradiente">
+        <ion-icon [name]="cancionActual.icono"></ion-icon>
+      </div>
+      <div class="mini-info">
+        <strong>{{ cancionActual.titulo }}</strong>
+        <span>{{ cancionActual.artista }}</span>
+      </div>
+      <div class="mini-controles">
+        <ion-button fill="clear" (click)="reproducir(cancionActual)">
+          <ion-icon [name]="estaReproduciendo ? 'pause' : 'play'"></ion-icon>
+        </ion-button>
+        <ion-button fill="clear" (click)="siguienteCancion()">
+          <ion-icon name="play-skip-forward"></ion-icon>
+        </ion-button>
+      </div>
+    </div>
+  }
+</ion-content>
